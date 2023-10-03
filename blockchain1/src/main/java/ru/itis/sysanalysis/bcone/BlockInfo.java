@@ -50,4 +50,8 @@ public class BlockInfo {
     public void setSign(byte[] sign) {
         this.sign = sign;
     }
+
+    public void setDataSign(byte[] sign) {
+        this.sign = sign;
+    }
 }

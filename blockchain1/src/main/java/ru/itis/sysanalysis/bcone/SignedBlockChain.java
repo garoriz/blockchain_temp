@@ -23,6 +23,7 @@ public class SignedBlockChain {
         try {
             keyPair = Utils.loadKeys();
             makeBlockChain();
+            //saveBlockChain();
 
             print();
 
@@ -49,6 +50,10 @@ public class SignedBlockChain {
 
             try {
                 prevHash = Utils.getHash(blockInfo);
+
+                byte [] bytes = String.join("", blockInfo.getData()).getBytes();
+                byte [] sign = Utils.generateRSAPSSSignature(keyPair.getPrivate(), bytes);
+                blockInfo.setDataSign(sign);
 
                 blockInfo.setSign(Utils.generateRSAPSSSignature(keyPair.getPrivate(), prevHash));
             } catch (Exception e) {
@@ -77,6 +82,13 @@ public class SignedBlockChain {
         byte[] prevHash = Utils.getHash(blockchain.get(0));
         for (int i = 1;i < BC_LENGTH; i++) {
             if (!Arrays.equals(prevHash, blockchain.get(i).getPrevHash())) {
+                return false;
+            }
+
+            var data = String.join("", blockchain.get(i).getData()).getBytes();
+            var dataSign = Utils.generateRSAPSSSignature(keyPair.getPrivate(), data);
+            if (!Arrays.equals(dataSign, blockchain.get(i).getSign())) {
+                System.out.println("WRONG");
                 return false;
             }
 

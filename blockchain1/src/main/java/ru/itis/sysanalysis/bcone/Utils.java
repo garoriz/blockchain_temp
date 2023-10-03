@@ -48,8 +48,8 @@ public class Utils {
 
     public static KeyPair loadKeys() throws Exception {
 
-        byte[] publicKeyHex = Files.readAllBytes(Paths.get("publik.key"));
-        byte[] privateKeyHex = Files.readAllBytes(Paths.get("private.key"));
+        byte[] publicKeyHex = Files.readAllBytes(Paths.get("/Users/timfich/Downloads/sysanalysis-master/publik.key"));
+        byte[] privateKeyHex = Files.readAllBytes(Paths.get("/Users/timfich/Downloads/sysanalysis-master/private.key"));
 
         PublicKey publicKey = convertArrayToPublicKey(Hex.decode(publicKeyHex),KEY_ALGORITHM);
         PrivateKey privateKey = convertArrayToPrivateKey(Hex.decode(privateKeyHex),KEY_ALGORITHM);
