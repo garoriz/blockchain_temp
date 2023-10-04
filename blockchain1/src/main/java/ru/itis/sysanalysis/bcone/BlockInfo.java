@@ -51,7 +51,11 @@ public class BlockInfo {
         this.sign = sign;
     }
 
-    public void setDataSign(byte[] sign) {
-        this.sign = sign;
+    public byte[] getSignBlock() {
+        return signBlock;
+    }
+
+    public void setSignBlock(byte[] signBlock) {
+        this.signBlock = signBlock;
     }
 }
