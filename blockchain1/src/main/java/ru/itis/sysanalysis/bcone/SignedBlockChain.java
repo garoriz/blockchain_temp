@@ -43,7 +43,7 @@ public class SignedBlockChain {
 
     private static void saveBlockChain() {
         try {
-            File myObj = new File("filename.txt");
+            File myObj = new File("blockchain.txt");
             if (myObj.createNewFile()) {
                 System.out.println("File created: " + myObj.getName());
             } else {
