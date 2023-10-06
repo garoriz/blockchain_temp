@@ -2,7 +2,7 @@ package ru.itis.sysanalysis.bcone;
 
 import org.bouncycastle.util.encoders.Hex;
 
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.io.File;  // Import the File class
-import java.io.IOException;  // Import the IOException class to handle errors
 
 public class SignedBlockChain {
 
@@ -45,6 +43,12 @@ public class SignedBlockChain {
         try {
             File myObj = new File("blockchain.txt");
             if (myObj.createNewFile()) {
+                String str = "Hello";
+                BufferedWriter writer = new BufferedWriter(new FileWriter(myObj));
+                writer.write(str);
+
+                writer.close();
+
                 System.out.println("File created: " + myObj.getName());
             } else {
                 System.out.println("File already exists.");
