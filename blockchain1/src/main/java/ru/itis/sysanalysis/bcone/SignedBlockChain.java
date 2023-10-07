@@ -25,13 +25,13 @@ public class SignedBlockChain {
             makeBlockChain();
             saveBlockChain();
 
-            print();
+            System.out.println(getString());
 
             System.out.println("verification result: " + verification());
 
             damage();
 
-            print();
+            System.out.println(getString());
 
             System.out.println("verification result: " + verification());
         } catch (Exception e) {
@@ -43,7 +43,7 @@ public class SignedBlockChain {
         try {
             File myObj = new File("blockchain.txt");
             if (myObj.createNewFile()) {
-                String str = "Hello";
+                String str = getString();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(myObj));
                 writer.write(str);
 
@@ -56,6 +56,10 @@ public class SignedBlockChain {
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchProviderException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -85,17 +89,18 @@ public class SignedBlockChain {
         }
     }
 
-    private static void print() throws NoSuchAlgorithmException, NoSuchProviderException, UnsupportedEncodingException {
+    private static String getString() throws NoSuchAlgorithmException, NoSuchProviderException, UnsupportedEncodingException {
+        StringBuilder string = new StringBuilder();
         for (int i = 0; i < BC_LENGTH; i++) {
             BlockInfo bi = blockchain.get(i);
-            System.out.println("===================== " + bi.getBlockNum() + " =============================");
-            System.out.println("prev hash: " + (bi.getPrevHash() != null ? new String(Hex.encode(bi.getPrevHash())) : ""));
-            for (String s : bi.getData()) System.out.println(s);
-            System.out.println("digest: " + new String(Hex.encode(Utils.getHash(bi))));
-            System.out.println("signature: " + new String(Hex.encode(bi.getSign())));
-            System.out.println("sign block: : " + new String(Hex.encode(bi.getSignBlock())));
-            System.out.println();
+            string.append("===================== ").append(bi.getBlockNum()).append(" =============================\n");
+            string.append("prev hash: ").append(bi.getPrevHash() != null ? new String(Hex.encode(bi.getPrevHash())) : "\n");
+            for (String s : bi.getData()) string.append(s).append("\n");
+            string.append("digest: ").append(new String(Hex.encode(Utils.getHash(bi)))).append("\n");
+            string.append("signature: ").append(new String(Hex.encode(bi.getSign()))).append("\n");
+            string.append("sign block: : ").append(new String(Hex.encode(bi.getSignBlock()))).append("\n");
         }
+        return string.toString();
     }
 
     private static boolean verification() throws GeneralSecurityException, UnsupportedEncodingException {
