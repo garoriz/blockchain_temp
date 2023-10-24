@@ -1,9 +1,14 @@
 package ru.itis.sa.neuroclient;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 
 public class NeuralNetwork {
 
@@ -78,7 +83,7 @@ public class NeuralNetwork {
     private static void readTestData100() {
         List<String> lstData;
         try(BufferedReader reader = new BufferedReader(
-                new InputStreamReader(NeuralNetwork.class.getClassLoader().getResourceAsStream("resources/test_data_100.csv")))) {
+                new InputStreamReader(new FileInputStream("D:\\IntelliJ IDEA projects\\sysanalysis\\neuroclient\\src\\main\\resources\\xdata.csv")))) {
             String line;
             int i = 0;
             while ((line = reader.readLine()) != null) {
@@ -96,16 +101,26 @@ public class NeuralNetwork {
         }
     }
 
-    public static void main(String[] args) {
-//        NeuralNetwork nn = new NeuralNetwork(0.11, 0.21, 0.22, 1.4, 2.0, 0.0002, 2.0056, 0.017,0.934, 1.5, 1.0047, 0.12, 1.32);
-//        DataModel dm = new DataModel("1.11", "0.11", "0.23", "1.41", "1.94", "0.0003", "2.016", "0.007", "0.904", "1.58", "1.017", "0.102", "1.2","","");
-        DataModel dm = new DataModel("1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1","","");
+    public static void main(String[] args) throws IOException {
+        DataModel dm = new DataModel("1.11", "0.51", "0.53", "0.5", "0", "0.5003", "0.116", "0.007", "0.004", "0.18", "0.017", "0.102", "1.2","1","30819f300d06092a864886f70d010101050003818d0030818902818100a811365d2f3642952751029edf87c8fa2aeb6e0feafcf800190a7dd2cf750c63262f6abd8ef52b251c0e10291d5e2f7e6682de1aae1d64d4f9b242050f898744ca300a44c4d8fc8af0e7a1c7fd9b606d7bde304b29bec01fbef554df6ba1b7b1ec355e1ff68bd37f3d40fb27d1aa233fe3dd6b63f7241e734739851ce8c590f70203010001");
         System.out.println(dm.toString());
         //        NeuralNetwork nn = new NeuralNetwork(1.11, 0.11, 0.23, 1.41, 1.94, 0.0003, 2.016, 0.007,0.904, 1.58, 1.017, 0.102, 1.2);
         NeuralNetwork nn = new NeuralNetwork(dm);
         //nn.readTestData100();
         System.out.println(nn.e());
 
+        String json = "{\"prevhash\":\"0007617fd0eca34b739ddb5fbc96da555636f645389ac84ff0083eb5b21f8c6d\",\"data\":" + dm.toString() + ",\"signature\":\"57071eedfb888c862f16288e9bad699a7fecfc2bbda97c12c8dacb808362778162c29d920a3e6fed7e925f9aa98e5aaf164274b166732ab7b5ae2e7b4bfdd31f3f010447dae3495a7357b83f49c3ae64de551052991281d780a5d6e6ffe91c9470dfab989cba790161b3e16ca18e0f79e96a29cb409402e52a743ccb28499ece\",\"nonce\":\"0\"}";
+        HttpURLConnection connection =
+                (HttpURLConnection) new URL("http://itislabs.ru/nbc/newblock").openConnection();
+        connection.setRequestMethod("POST");
+        connection.addRequestProperty("Content-Type","application/json;charset=UTF-8");
+        connection.setDoOutput(true);
+        connection.getOutputStream().write(json.getBytes("UTF-8"));
+        int r = connection.getResponseCode();
+
+        String resp = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
+
+        System.out.println(resp);
      }
 
 }

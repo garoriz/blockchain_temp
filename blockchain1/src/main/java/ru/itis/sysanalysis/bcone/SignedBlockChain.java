@@ -1,16 +1,17 @@
 package ru.itis.sysanalysis.bcone;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class SignedBlockChain {
 
@@ -27,13 +28,13 @@ public class SignedBlockChain {
 
             System.out.println(getString());
 
-            System.out.println("verification result: " + verification());
+            //System.out.println("verification result: " + verification());
 
-            damage();
+            //damage();
 
-            System.out.println(getString());
+            //System.out.println(getString());
 
-            System.out.println("verification result: " + verification());
+            //System.out.println("verification result: " + verification());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,7 +78,7 @@ public class SignedBlockChain {
 
                 byte[] bytes = String.join("", blockInfo.getData()).getBytes();
                 byte[] signBlock = Utils.generateRSAPSSSignature(keyPair.getPrivate(), bytes);
-                blockInfo.setSignBlock(signBlock);
+                blockInfo.setSignBlock(getSignFromArbiter(signBlock));
 
                 blockInfo.setSign(Utils.generateRSAPSSSignature(keyPair.getPrivate(), prevHash));
             } catch (Exception e) {
@@ -87,6 +88,36 @@ public class SignedBlockChain {
 
             blockchain.add(blockInfo);
         }
+    }
+
+    private static byte[] getSignFromArbiter(byte[] signBlock) throws IOException {
+        URL url = new URL("http://itislabs.ru/ts");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("digest", new String(Hex.encode(signBlock)));
+
+        con.setDoOutput(true);
+        DataOutputStream out = new DataOutputStream(con.getOutputStream());
+        out.writeBytes(ParameterStringBuilder.getParamsString(parameters));
+        out.flush();
+        out.close();
+
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        HttpResp resp = gson.fromJson(String.valueOf(content), HttpResp.class);
+        return resp.timeStampToken.signature.getBytes();
     }
 
     private static String getString() throws NoSuchAlgorithmException, NoSuchProviderException, UnsupportedEncodingException {

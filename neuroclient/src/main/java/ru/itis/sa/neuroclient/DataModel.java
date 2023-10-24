@@ -5,8 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class DataModel {
     private String w11="0";
     private String w12="0";
@@ -23,6 +21,24 @@ public class DataModel {
     private String w3="0";
     private String e="0";
     private String publickey;
+
+    public DataModel(String w11, String w12, String w21, String w22, String v11, String v12, String v13, String v21, String v22, String v23, String w1, String w2, String w3, String e, String publickey) {
+        this.w11 = w11;
+        this.w12 = w12;
+        this.w21 = w21;
+        this.w22 = w22;
+        this.v11 = v11;
+        this.v12 = v12;
+        this.v13 = v13;
+        this.v21 = v21;
+        this.v22 = v22;
+        this.v23 = v23;
+        this.w1 = w1;
+        this.w2 = w2;
+        this.w3 = w3;
+        this.e = e;
+        this.publickey = publickey;
+    }
 
     // return as normalized JSON object
     public String toString() {
@@ -43,5 +59,65 @@ public class DataModel {
                 .append("\"e\":\"").append(e).append("\",")
                 .append("\"publickey\":\"").append(publickey).append("\"}")
                 .toString();
+    }
+
+    public String getW11() {
+        return w11;
+    }
+
+    public String getW12() {
+        return w12;
+    }
+
+    public String getW21() {
+        return w21;
+    }
+
+    public String getW22() {
+        return w22;
+    }
+
+    public String getV11() {
+        return v11;
+    }
+
+    public String getV12() {
+        return v12;
+    }
+
+    public String getV13() {
+        return v13;
+    }
+
+    public String getV21() {
+        return v21;
+    }
+
+    public String getV22() {
+        return v22;
+    }
+
+    public String getV23() {
+        return v23;
+    }
+
+    public String getW1() {
+        return w1;
+    }
+
+    public String getW2() {
+        return w2;
+    }
+
+    public String getW3() {
+        return w3;
+    }
+
+    public String getE() {
+        return e;
+    }
+
+    public String getPublickey() {
+        return publickey;
     }
 }
